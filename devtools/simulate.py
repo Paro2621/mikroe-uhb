@@ -17,4 +17,4 @@ fakefile = FakeDevFile(bootinforaw)
 dev = Device(fakefile)
 dev.program(open(sys.argv[2]), False)
 
-print('\n'.join(fakefile.transfers))
+print(('\n'.join(fakefile.transfers)))

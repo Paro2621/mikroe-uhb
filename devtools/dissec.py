@@ -22,21 +22,21 @@ for line in sys.stdin.readlines():
             print('In: USB RESET')
         elif data[0:1] == b'\x0f':
             cmd = ord(data[1:2])
-            print('In: ACK: %5s (%02x)' % (cmd_enum[cmd], cmd))
+            print(('In: ACK: %5s (%02x)' % (cmd_enum[cmd], cmd)))
         else:
-            print('In: BootInfo? (len=%d)' % ord(data[0:1]))
+            print(('In: BootInfo? (len=%d)' % ord(data[0:1])))
     else:
         if idle:
             stx, cmd, addr, counter = struct.unpack('<BBLH', data[:8])
             assert(stx == 0x0f)
             cmd = cmd_enum[cmd]
-            print('Out: CMD %5s (addr=0x%08x counter=0x%04x)' % (cmd, addr, counter))
+            print(('Out: CMD %5s (addr=0x%08x counter=0x%04x)' % (cmd, addr, counter)))
             if cmd == 'WRITE':
                 buf_size = EraseBlock
                 idle = False
         else:
             read_len = min(counter, len(data))
-            print('Out: Data %s' % hexlify(data[:read_len]).upper().decode('ascii'))
+            print(('Out: Data %s' % hexlify(data[:read_len]).upper().decode('ascii')))
             counter -= read_len
             buf_size -= read_len
             assert(buf_size >= 0)

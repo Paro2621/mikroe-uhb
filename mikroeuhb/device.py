@@ -1,6 +1,6 @@
 import re, struct, logging
-from util import hexlify
-from bootinfo import BootInfo
+from .util import hexlify
+from .bootinfo import BootInfo
 logger = logging.getLogger(__name__)
 
 HID_buf_size = 64   # Size of a USB HID packet, fixed by the standard
@@ -125,10 +125,10 @@ class Device:
            If print_info is True, print bootinfo to standard output.
            Use disable_bootloader with caution.
         """
-        import devkit, hexfile
+        from . import devkit, hexfile
         bootinfo = self.cmd_info()
         if print_info:
-            print(repr(bootinfo))
+            print((repr(bootinfo)))
         if hexf:
             self.cmd_boot()
             self.cmd_sync()

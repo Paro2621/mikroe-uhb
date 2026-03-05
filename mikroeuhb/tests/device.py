@@ -7,7 +7,7 @@ import mikroeuhb.device as device
 from mikroeuhb.device import Device, Command, HID_buf_size
 from mikroeuhb.bootinfo import BootInfo
 from mikroeuhb.util import bord
-import repeatable, logexception
+from . import repeatable, logexception
 device.logger.addHandler(logexception.LogExceptionHandler(level=logging.WARNING))
 
 def gzresource(filename):
@@ -15,7 +15,7 @@ def gzresource(filename):
     current package directory"""
     gzf = GzipFile(fileobj=resource_stream(__name__, filename), mode='rb')
     if not hasattr(gzf, 'xreadlines'):
-        gzf.xreadlines = gzf.readlines
+        gzf.__iter__ = gzf.readlines
     return gzf
 
 class FakeDevFile(object):
@@ -90,7 +90,7 @@ class DevKitCase(unittest.TestCase):
         fakefile = FakeDevFile(unhexlify(re.sub(r'\s+','',self.bootinfo)))
         dev = Device(fakefile)
         dev.program(gzresource(self.hexfile), False)
-        expected = [line.strip() for line in gzresource(self.capfile).xreadlines()]
+        expected = [line.strip() for line in gzresource(self.capfile)]
         self.assertListEqual(fakefile.transfers, expected)
 
 class STM32Program(DevKitCase):

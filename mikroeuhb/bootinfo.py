@@ -1,5 +1,5 @@
 import struct, logging
-from util import bord
+from .util import bord
 logger = logging.getLogger(__name__)
 
 # Map MCU type numeric codes to their names
@@ -35,8 +35,8 @@ assert(0 not in _field)  # No field shall have a zero id
 
 # MCUs below apparently use packed structs.
 _fieldalign_override = dict([(field_name,
-                              dict([(mcu, 1) for mcu in 'PIC16', 'PIC18', 'PIC18FJ']))
-                             for field_name,_,_ in _field.itervalues()])
+                              dict([(mcu, 1) for mcu in ('PIC16', 'PIC18', 'PIC18FJ')]))
+                             for field_name,_,_ in _field.values()])
 # MCUs below appear to align fields to 2 bytes instead of aligning to 4 bytes.
 for mcu in 'PIC24', 'DSPIC', 'DSPIC33':
     for field_name in 'BootStart', 'McuSize':
@@ -107,7 +107,7 @@ class BootInfo(dict):
     def __repr__(self):
         """Pretty-print the fields in the same order as specified in _field"""
         s = ''
-        for k,_,_ in _field.itervalues():
+        for k,_,_ in _field.values():
             if k not in self: continue
             v = self[k]
             if isinstance(v, int):

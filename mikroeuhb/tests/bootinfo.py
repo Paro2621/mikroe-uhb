@@ -1,6 +1,6 @@
 import os, re, shutil, subprocess, random, tempfile, unittest, logging
 from binascii import unhexlify
-import repeatable, logexception
+from . import repeatable, logexception
 import mikroeuhb.bootinfo as bootinfo
 bootinfo.logger.addHandler(logexception.LogExceptionHandler(level=logging.WARNING))
 
@@ -125,15 +125,15 @@ class RandomBootInfo(BootInfoCase):
         for tid in types:
             name, num_bytes, enum_map = bootinfo._field[tid]
             if enum_map:
-                allowed = enum_map.keys()
+                allowed = list(enum_map.keys())
                 if tid == 1:
-                    reverse_enum_map = dict([(v,k) for k,v in enum_map.iteritems()])
-                    disallowed = set([reverse_enum_map[mcu] for x in bootinfo._fieldalign_override.itervalues() for mcu in x.iterkeys()])
+                    reverse_enum_map = dict([(v,k) for k,v in enum_map.items()])
+                    disallowed = set([reverse_enum_map[mcu] for x in bootinfo._fieldalign_override.values() for mcu in x.keys()])
                     allowed = list(set(allowed) - disallowed)
                 value = random.choice(allowed)
                 expected_value = enum_map[value]
             elif num_bytes > 4:
-                raw_value = [random.randint(0, 255) for i in xrange(num_bytes)]
+                raw_value = [random.randint(0, 255) for i in range(num_bytes)]
                 value = '"' + ''.join(['\\x%02x'%x for x in raw_value]) + '"'
                 expected_value = bytes(bytearray(raw_value))
             else:

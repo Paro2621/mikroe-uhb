@@ -1,4 +1,4 @@
-PYTHON = python
+PYTHON = python3
 INSTALL = install
 all:
 	$(PYTHON) setup.py build
